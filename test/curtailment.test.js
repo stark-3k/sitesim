@@ -411,7 +411,8 @@ function liveSite (count = 10, brand = 'antminer') {
     miners: list.map(({ id, brand }) => ({ id, brand })),
     meterId: 'meter',
     marginKw: 1,
-    pendingMs: 0,
+    // Below zero, so a command is never still pending within the same millisecond.
+    pendingMs: -1,
     getSignals: async () => ({ ...signals }),
     ...opts
   })
