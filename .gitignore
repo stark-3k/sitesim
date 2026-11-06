@@ -1,0 +1,6 @@
+# MDK and its Workers, installed by mdk/setup.js
+.mdk/
+node_modules/
+
+.DS_Store
+*.log

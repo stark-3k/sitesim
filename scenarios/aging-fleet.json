@@ -1,0 +1,19 @@
+{
+  "id": "aging-fleet",
+  "name": "Aging fleet",
+  "description": "A steady stream of hardware faults across a day: fans, boards, PSUs, hung firmware, and quietly degrading chips.",
+  "goal": "Find every sick machine. Hung firmware and degraded chips are the hardest to spot.",
+  "speed": 300,
+  "duration": "24:00:00",
+  "events": [
+    { "at": "00:20:00", "action": "fault", "type": "chip_degradation", "target": "random:6", "params": { "severity": 0.2 } },
+    { "at": "01:00:00", "action": "fault", "type": "firmware_hang", "target": "random:3" },
+    { "at": "02:30:00", "action": "fault", "type": "fan_failure", "target": "random:4", "params": { "severity": 0.7 } },
+    { "at": "04:00:00", "action": "fault", "type": "hashboard_failure", "target": "random:5" },
+    { "at": "06:00:00", "action": "fault", "type": "psu_failure", "target": "random:2" },
+    { "at": "08:00:00", "action": "fault", "type": "network_loss", "target": "random:3" },
+    { "at": "10:00:00", "action": "fault", "type": "control_board_fault", "target": "random:2" },
+    { "at": "12:00:00", "action": "fault", "type": "firmware_hang", "target": "random:4" },
+    { "at": "16:00:00", "action": "fault", "type": "fan_failure", "target": "random:3", "params": { "severity": 1 } }
+  ]
+}

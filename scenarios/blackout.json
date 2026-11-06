@@ -1,0 +1,13 @@
+{
+  "id": "blackout",
+  "name": "Blackout and recovery",
+  "description": "A full grid outage for 20 minutes, a second short drop during the restart, then a switch failure in container 2.",
+  "goal": "Watch how your stack handles a fleet going dark, rebooting, and partly staying offline.",
+  "speed": 60,
+  "duration": "02:00:00",
+  "events": [
+    { "at": "00:10:00", "action": "fault", "type": "grid_outage", "durationSec": 1200 },
+    { "at": "00:31:00", "action": "fault", "type": "grid_outage", "durationSec": 180 },
+    { "at": "00:45:00", "action": "fault", "type": "switch_failure", "target": "c2", "durationSec": 1800 }
+  ]
+}

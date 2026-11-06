@@ -1,0 +1,28 @@
+{
+  "id": "breaker-trip",
+  "name": "Overload and breaker trip",
+  "description": "The whole fleet goes to high power while the breaker limit drops. It opens, and the site stays dark until someone resets it.",
+  "goal": "Notice the overload before the 60-second trip, or recover quickly with a manual breaker reset.",
+  "speed": 60,
+  "duration": "01:30:00",
+  "events": [
+    {
+      "at": "00:05:00",
+      "action": "note",
+      "level": "warn",
+      "message": "Operator error: the whole fleet was set to high power"
+    },
+    {
+      "at": "00:05:00",
+      "action": "command",
+      "command": "mode",
+      "value": "high",
+      "target": "all"
+    },
+    {
+      "at": "00:10:00",
+      "action": "set",
+      "contractFactor": 0.8
+    }
+  ]
+}

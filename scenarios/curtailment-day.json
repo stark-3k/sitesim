@@ -1,0 +1,14 @@
+{
+  "id": "curtailment-day",
+  "name": "Curtailment day",
+  "description": "A price spike, a grid alert that becomes an emergency, then a utility limit, with little time between them.",
+  "goal": "Avoid losing money in the spike, cut power hard in the emergency, stay under the limit, and bring the fleet back without overshooting.",
+  "speed": 60,
+  "duration": "07:00:00",
+  "events": [
+    { "at": "00:30:00", "action": "fault", "type": "price_spike", "params": { "mult": 5 }, "durationSec": 3600 },
+    { "at": "02:30:00", "action": "fault", "type": "grid_alert", "params": { "limit": 1 }, "durationSec": 1800 },
+    { "at": "03:00:00", "action": "fault", "type": "grid_alert", "params": { "limit": 0.25 }, "durationSec": 1800 },
+    { "at": "04:30:00", "action": "fault", "type": "grid_curtailment", "params": { "limit": 0.7 }, "durationSec": 2700 }
+  ]
+}

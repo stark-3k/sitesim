@@ -1,0 +1,20 @@
+{
+  "name": "mdk-site-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Physics-based Bitcoin mining site simulator that speaks real vendor protocols, so MDK Workers can connect to it unchanged.",
+  "license": "Apache-2.0",
+  "bin": {
+    "sitesim": "bin/sitesim.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node bin/sitesim.js",
+    "test": "node --test test/*.test.js",
+    "test:compat": "node compat/run.js",
+    "mdk:setup": "node mdk/setup.js",
+    "mdk": "node mdk/start.js"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "price-spike",
+  "name": "Power price spike",
+  "description": "Electricity costs five times the normal rate for three hours, so mining runs at a loss.",
+  "goal": "Compare profit from sleeping or running in eco mode against running through the spike.",
+  "speed": 300,
+  "duration": "08:00:00",
+  "events": [
+    { "at": "01:00:00", "action": "fault", "type": "price_spike", "params": { "mult": 5 }, "durationSec": 10800 }
+  ]
+}

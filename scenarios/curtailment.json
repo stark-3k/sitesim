@@ -1,0 +1,13 @@
+{
+  "id": "curtailment",
+  "name": "Grid curtailment",
+  "description": "The utility requests a cut to 60% of contracted power for two hours, then 35% for one more. Nothing sheds load unless you do.",
+  "goal": "Stay under the limit. Every kWh above it costs a penalty, so watch the penalty total.",
+  "speed": 60,
+  "duration": "05:00:00",
+  "events": [
+    { "at": "00:15:00", "action": "note", "level": "warn", "message": "Utility notice: curtailment begins in 15 minutes" },
+    { "at": "00:30:00", "action": "fault", "type": "grid_curtailment", "params": { "limit": 0.6 }, "durationSec": 7200 },
+    { "at": "02:30:00", "action": "fault", "type": "grid_curtailment", "params": { "limit": 0.35 }, "durationSec": 3600 }
+  ]
+}

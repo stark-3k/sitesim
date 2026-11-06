@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SiteSim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23f7931a'/><path d='M8 22V10h4v12zm6 0V6h4v16zm6 0v-8h4v8z' fill='%23161412'/></svg>">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/" } }</script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <h1>SiteSim</h1>
+        <span class="brand-sub">Mining site simulator</span>
+      </div>
+    </div>
+
+    <div class="clock" aria-live="off">
+      <span id="clock-time" class="clock-time">--:--</span>
+      <span id="clock-day" class="clock-day">Day 1</span>
+    </div>
+
+    <div id="view-select" class="segmented" role="group" aria-label="View">
+      <button type="button" data-view="dashboard" class="active">Dashboard</button>
+      <button type="button" data-view="site3d">3D site</button>
+    </div>
+
+    <div class="transport" role="group" aria-label="Simulation speed">
+      <button id="btn-pause" class="btn" type="button">Pause</button>
+      <div id="speeds" class="segmented"></div>
+      <span id="speed-note" class="speed-note"></span>
+    </div>
+
+    <div class="topbar-right">
+      <button id="btn-mdk" class="btn" type="button">Connect MDK</button>
+      <a class="btn" href="/api/export.csv">Export CSV</a>
+      <button id="btn-reset" class="btn btn-quiet" type="button">Reset</button>
+      <span id="conn" class="conn" title="Connection to the simulator"><i></i><span>Connecting</span></span>
+    </div>
+  </header>
+
+  <div id="alert-banner" class="banner" hidden></div>
+
+  <main class="layout">
+    <section class="kpis" aria-label="Site summary">
+      <article class="kpi"><h2>Hashrate</h2><p id="kpi-hash" class="kpi-value">–</p><p id="kpi-hash-sub" class="kpi-sub"></p></article>
+      <article class="kpi">
+        <h2>Power</h2><p id="kpi-power" class="kpi-value">–</p>
+        <div class="meter" aria-hidden="true"><span id="kpi-power-bar"></span></div>
+        <p id="kpi-power-sub" class="kpi-sub"></p>
+      </article>
+      <article class="kpi"><h2>Temperature</h2><p id="kpi-temp" class="kpi-value">–</p><p id="kpi-temp-sub" class="kpi-sub"></p></article>
+      <article class="kpi"><h2>Fleet</h2><p id="kpi-fleet" class="kpi-value">–</p><p id="kpi-fleet-sub" class="kpi-sub"></p></article>
+      <article class="kpi"><h2>Profit rate</h2><p id="kpi-rate" class="kpi-value">–</p><p id="kpi-rate-sub" class="kpi-sub"></p></article>
+      <article class="kpi"><h2>Total profit</h2><p id="kpi-profit" class="kpi-value">–</p><p id="kpi-profit-sub" class="kpi-sub"></p></article>
+    </section>
+
+    <section class="panel panel-3d" aria-label="3D site" hidden>
+      <div class="panel-head">
+        <h2>3D site</h2>
+        <div class="head-controls">
+          <div id="source-select" class="segmented" role="group" aria-label="Data source">
+            <button type="button" data-source="sim" class="active" title="Read directly from the simulator">Simulator</button>
+            <button type="button" data-source="mdk" title="Read through MDK's Kernel and Workers">Through MDK</button>
+          </div>
+          <div id="metric-select-3d" class="segmented" role="group" aria-label="Colour miners by">
+            <button type="button" data-metric="state" class="active">Status</button>
+            <button type="button" data-metric="model">Model</button>
+            <button type="button" data-metric="temp">Temp</button>
+            <button type="button" data-metric="hash">Hash</button>
+            <button type="button" data-metric="power">Power</button>
+          </div>
+          <button id="btn-walk" type="button" class="btn btn-small btn-walk">Walk the site</button>
+          <button id="btn-camera" type="button" class="btn btn-small">Reset view</button>
+          <button id="btn-fullscreen" type="button" class="btn btn-small" title="Shortcut: F">Full screen</button>
+        </div>
+      </div>
+      <div id="site3d" class="site3d">
+        <div class="site3d-status">
+          <span id="status3d-clock" class="site3d-clock"></span>
+          <span id="status3d-stats"></span>
+          <span id="status3d-alert" class="site3d-alert" role="status"></span>
+          <button id="btn-fullscreen-exit" type="button" class="btn btn-small">Exit full screen</button>
+        </div>
+      </div>
+      <p id="site3d-error" class="error" hidden></p>
+      <div id="source-status" class="source-status" role="status" hidden></div>
+      <div class="site3d-foot">
+        <div id="legend-3d" class="legend"></div>
+        <p class="hint">Drag to orbit, scroll to zoom, right-drag to pan. Zoom in for fans and other detail, and a failed fan stops turning. Click a miner for details, or a container’s label to go there and target it with a fault. Triangles mark faults. Position inside a container is only a picture: the model gives its miners the same inlet temperature.</p>
+      </div>
+    </section>
+
+    <section class="panel panel-fleet" aria-label="Fleet">
+      <div class="panel-head">
+        <div class="head-title">
+          <h2>Fleet</h2>
+          <button id="btn-fleet" type="button" class="btn btn-small">Edit fleet</button>
+        </div>
+        <div id="metric-select" class="segmented" role="group" aria-label="Colour miners by">
+          <button type="button" data-metric="state" class="active">Status</button>
+          <button type="button" data-metric="model">Model</button>
+          <button type="button" data-metric="temp">Temp</button>
+          <button type="button" data-metric="hash">Hash</button>
+          <button type="button" data-metric="power">Power</button>
+        </div>
+      </div>
+      <div id="fleet"></div>
+      <div id="legend" class="legend"></div>
+      <div class="bulk">
+        <span class="bulk-label">Whole fleet</span>
+        <button type="button" class="btn btn-small" data-bulk="sleep">Sleep</button>
+        <button type="button" class="btn btn-small" data-bulk="wake">Wake</button>
+        <button type="button" class="btn btn-small" data-bulk-mode="eco">Eco</button>
+        <button type="button" class="btn btn-small" data-bulk-mode="normal">Normal</button>
+        <button type="button" class="btn btn-small" data-bulk-mode="high">High</button>
+        <button type="button" class="btn btn-small" data-bulk="reboot">Reboot</button>
+      </div>
+    </section>
+
+    <section class="panel panel-models" aria-label="Miner models">
+      <div class="panel-head"><h2>Models</h2></div>
+      <div class="table-wrap">
+        <table class="models">
+          <thead><tr><th>Model</th><th class="n">Mining</th><th class="n">Hashrate</th><th class="n">Power</th><th class="n">W/TH</th><th class="n">Hottest</th></tr></thead>
+          <tbody id="models"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel panel-charts" aria-label="Charts">
+      <div class="panel-head">
+        <h2>Trends</h2>
+        <div id="window-select" class="segmented" role="group" aria-label="Chart window">
+          <button type="button" data-window="3600">1h</button>
+          <button type="button" data-window="21600" class="active">6h</button>
+          <button type="button" data-window="86400">24h</button>
+          <button type="button" data-window="0">All</button>
+        </div>
+      </div>
+      <div class="charts">
+        <figure class="chart"><figcaption>Hashrate <span class="unit">PH/s</span></figcaption><div class="chart-legend" id="legend-hash"></div><canvas id="chart-hash"></canvas></figure>
+        <figure class="chart"><figcaption>Power <span class="unit">kW</span></figcaption><div class="chart-legend" id="legend-power"></div><canvas id="chart-power"></canvas></figure>
+        <figure class="chart"><figcaption>Temperature <span class="unit">°C</span></figcaption><div class="chart-legend" id="legend-temp"></div><canvas id="chart-temp"></canvas></figure>
+        <figure class="chart"><figcaption>Economics <span class="unit">$/h</span></figcaption><div class="chart-legend" id="legend-econ"></div><canvas id="chart-econ"></canvas></figure>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="panel" id="curtail-panel">
+        <div class="panel-head">
+          <h2>Curtailment app</h2>
+          <span id="curtail-state" class="curtail-state"></span>
+        </div>
+        <p id="curtail-off" class="hint"></p>
+        <div id="curtail-on" hidden>
+          <p id="curtail-why" class="curtail-why"></p>
+          <dl id="curtail-stats" class="curtail-stats"></dl>
+          <form id="curtail-form" class="curtail-form">
+            <label for="curtail-cap">Site power cap</label>
+            <input id="curtail-cap" type="number" min="1" step="1" placeholder="None" aria-describedby="curtail-error">
+            <span class="unit">kW</span>
+            <button type="submit" class="btn btn-small">Set</button>
+          </form>
+          <p id="curtail-error" class="error" hidden></p>
+          <details class="curtail-log"><summary>What it did</summary><ul id="curtail-log"></ul></details>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Scenarios</h2></div>
+        <div id="scenario-active" class="scenario-active" hidden></div>
+        <div id="scenario-result" class="scenario-result" hidden></div>
+        <div id="scenario-list" class="scenario-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Inject a fault</h2></div>
+        <form id="fault-form" class="form">
+          <label>Fault
+            <select id="fault-type"></select>
+          </label>
+          <p id="fault-desc" class="hint"></p>
+          <label id="fault-target-wrap">Target
+            <select id="fault-target"></select>
+          </label>
+          <div id="fault-params"></div>
+          <label>Duration
+            <select id="fault-duration">
+              <option value="0">Until cleared</option>
+              <option value="600">10 minutes</option>
+              <option value="1800">30 minutes</option>
+              <option value="3600">1 hour</option>
+              <option value="14400">4 hours</option>
+            </select>
+          </label>
+          <button class="btn btn-primary" type="submit">Inject</button>
+          <p id="fault-error" class="error" hidden></p>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Active faults <span id="fault-count" class="count"></span></h2>
+          <button id="btn-clear-all" type="button" class="btn btn-small btn-quiet" hidden>Clear all</button>
+        </div>
+        <ul id="fault-list" class="fault-list"></ul>
+        <label class="toggle">
+          <input id="chaos" type="checkbox">
+          <span>Random failures</span>
+          <small id="chaos-note"></small>
+        </label>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Pools</h2></div>
+        <div id="pools"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Containers</h2></div>
+        <div id="containers"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Device connections</h2></div>
+        <div id="protocols"></div>
+      </section>
+    </aside>
+
+    <section class="panel panel-log" aria-label="Event log">
+      <div class="panel-head"><h2>Event log</h2></div>
+      <ol id="events" class="events"></ol>
+    </section>
+  </main>
+
+  <dialog id="miner-dialog" class="dialog">
+    <div id="miner-body"></div>
+  </dialog>
+
+  <dialog id="fleet-dialog" class="dialog dialog-fleet" aria-labelledby="fleet-title">
+    <div class="dialog-head">
+      <h2 id="fleet-title">Edit fleet</h2>
+      <button type="button" class="btn btn-small btn-quiet" data-close>Close</button>
+    </div>
+    <form id="fleet-form" class="form" novalidate>
+      <div class="field-row">
+        <label>Containers<input id="fleet-containers" type="number" min="1" step="1" inputmode="numeric"></label>
+        <label>Miners per container<input id="fleet-per" type="number" min="1" step="1" inputmode="numeric"></label>
+      </div>
+      <div class="fleet-head">
+        <h3>Miners by brand</h3>
+        <button id="fleet-even" type="button" class="btn btn-small">Split evenly</button>
+      </div>
+      <div id="fleet-brands" class="fleet-brands"></div>
+      <p id="fleet-status" class="fleet-status" role="status"></p>
+      <p class="hint">Applying starts the simulation over, clearing history, earnings, faults and any running scenario. Miners may move to different ports, so restart any connected MDK Workers with the new settings.</p>
+      <p id="fleet-error" class="error" role="alert" hidden></p>
+      <div class="fleet-actions">
+        <button id="fleet-apply" class="btn btn-primary" type="submit">Apply and restart simulation</button>
+      </div>
+      <details class="fleet-command">
+        <summary>Start with this fleet next time</summary>
+        <p class="hint">The fleet you apply here lasts until the simulator stops. To start with it next time, run:</p>
+        <pre id="fleet-cli" class="code"></pre>
+      </details>
+    </form>
+  </dialog>
+
+  <dialog id="mdk-dialog" class="dialog dialog-wide">
+    <div class="dialog-head">
+      <h2>Connect MDK</h2>
+      <button type="button" class="btn btn-small btn-quiet" data-close>Close</button>
+    </div>
+    <p class="hint">Pass these options to each Worker's boot function. The simulator answers on the same protocols as the real devices, so the Workers need no changes.</p>
+    <pre id="mdk-config" class="code"></pre>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

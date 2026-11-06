@@ -1,0 +1,13 @@
+{
+  "id": "pool-outage",
+  "name": "Primary pool outage",
+  "description": "The primary pool goes down and miners fail over to the backup. Later the backup degrades as well.",
+  "goal": "Check that your stack notices the failover and that credited hashrate recovers.",
+  "speed": 60,
+  "duration": "02:00:00",
+  "events": [
+    { "at": "00:05:00", "action": "fault", "type": "pool_degraded", "target": "pool:f2pool", "params": { "staleRate": 0.08, "rejectRate": 0.04 }, "durationSec": 600 },
+    { "at": "00:15:00", "action": "fault", "type": "pool_outage", "target": "pool:f2pool", "durationSec": 2700 },
+    { "at": "00:40:00", "action": "fault", "type": "pool_degraded", "target": "pool:backup", "params": { "staleRate": 0.1, "rejectRate": 0.05 }, "durationSec": 1200 }
+  ]
+}

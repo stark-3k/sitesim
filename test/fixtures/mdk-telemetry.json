@@ -1,0 +1,676 @@
+{
+ "_note": "Captured from real MDK Workers against the simulator. Shapes, not real-device data.",
+ "healthy": {
+  "avalon": {
+   "hashrate_avg": 111.73,
+   "power": 3385,
+   "temperature": 69,
+   "fan_speed": 4831,
+   "status": "mining",
+   "uptime": 46,
+   "efficiency": 30.29,
+   "power_mode": "normal"
+  },
+  "antminer": {
+   "hashrate_rt": 203.6,
+   "hashrate_avg": 203.6,
+   "hashrate_ideal": 200,
+   "power": 3507,
+   "efficiency": 17.23,
+   "temperature": 72,
+   "ambient_temp": 27.4,
+   "fans": [
+    {
+     "index": 0,
+     "rpm": 4965
+    },
+    {
+     "index": 1,
+     "rpm": 4965
+    },
+    {
+     "index": 2,
+     "rpm": 4965
+    },
+    {
+     "index": 3,
+     "rpm": 4965
+    }
+   ],
+   "status": "mining",
+   "uptime": 46,
+   "power_mode": "normal",
+   "safe_mode": false,
+   "accepted_shares": 16,
+   "rejected_shares": 0,
+   "pool_url": "stratum+tcp://btc.f2pool.com:1314",
+   "pools": [
+    {
+     "index": 0,
+     "url": "stratum+tcp://btc.f2pool.com:1314",
+     "user": "haven7346.m021",
+     "status": "alive",
+     "priority": 0,
+     "getworks": 0,
+     "accepted": 16,
+     "rejected": 0,
+     "discarded": 0,
+     "stale": 0,
+     "diff": "131072",
+     "difficulty_accepted": 2097152,
+     "difficulty_rejected": 0,
+     "difficulty_stale": 0,
+     "last_share_difficulty": "131072",
+     "last_share_time": "1970-01-01 00:00:00"
+    },
+    {
+     "index": 1,
+     "url": "stratum+tcp://backup.pool.sim:3333",
+     "user": "haven7346.m021",
+     "status": "alive",
+     "priority": 1,
+     "getworks": 0,
+     "accepted": 0,
+     "rejected": 0,
+     "discarded": 0,
+     "stale": 0,
+     "diff": "131072",
+     "difficulty_accepted": 0,
+     "difficulty_rejected": 0,
+     "difficulty_stale": 0,
+     "last_share_difficulty": "131072",
+     "last_share_time": "1970-01-01 00:00:00"
+    }
+   ],
+   "errors": []
+  },
+  "whatsminer": {
+   "hashrate_rt": 99.51,
+   "hashrate_avg": 99.51,
+   "power": 3398,
+   "temperature": 69.7,
+   "fan_speed_in": 5030,
+   "fan_speed_out": 5030,
+   "status": "mining",
+   "uptime": 46,
+   "accepted_shares": 0,
+   "rejected_shares": 0,
+   "pool_url": "stratum+tcp://btc.f2pool.com:1314",
+   "efficiency": 34.14,
+   "power_mode": "normal",
+   "api_version": "3.0.3",
+   "pools": [
+    {
+     "index": 1,
+     "url": "stratum+tcp://btc.f2pool.com:1314",
+     "status": "alive",
+     "user": "haven7346.m041",
+     "stratum_active": true,
+     "stratum_difficulty": 0,
+     "last_share_time": 1793904933,
+     "pool_rejected": 0
+    },
+    {
+     "index": 2,
+     "url": "stratum+tcp://backup.pool.sim:3333",
+     "status": "alive",
+     "user": "haven7346.m041",
+     "stratum_active": false,
+     "stratum_difficulty": 0,
+     "last_share_time": 1793904933,
+     "pool_rejected": 0
+    }
+   ],
+   "errors": []
+  },
+  "sealminer": {
+   "hashrate_rt": 226.23,
+   "hashrate_avg": 226.23,
+   "hashrate_ideal": 230.6,
+   "hashrate_pr": 98.1,
+   "power": 4459,
+   "power_limit": 4300,
+   "efficiency": 19.71,
+   "temperature": 70,
+   "fan_speed": 5028,
+   "power_mode": "normal",
+   "status": "running",
+   "tune_status": "fine_tuning_done",
+   "uptime": 46,
+   "accepted_shares": 18,
+   "rejected_shares": 0,
+   "reject_rate": 0,
+   "pool_url": "btc.f2pool.com",
+   "pools": [
+    {
+     "index": 0,
+     "url": "stratum+tcp://btc.f2pool.com:1314",
+     "status": "alive",
+     "priority": 0,
+     "quota": 1,
+     "user": "haven7346.m061",
+     "stratum": {
+      "has": true,
+      "active": true,
+      "url": "btc.f2pool.com",
+      "difficulty": 131072
+     },
+     "shares": {
+      "accepted": 18,
+      "rejected": 0,
+      "stale": 0,
+      "discarded": 0,
+      "works": 0,
+      "getworks": 0,
+      "diff1Shares": 0
+     },
+     "failures": {
+      "get": 0,
+      "remote": 0,
+      "badWork": 0
+     },
+     "rejectedPct": 0,
+     "stalePct": 0,
+     "bestShare": 0,
+     "lastShareTime": 1793904933,
+     "currentBlockHeight": 0
+    },
+    {
+     "index": 1,
+     "url": "stratum+tcp://backup.pool.sim:3333",
+     "status": "alive",
+     "priority": 1,
+     "quota": 1,
+     "user": "haven7346.m061",
+     "stratum": {
+      "has": true,
+      "active": false,
+      "url": null,
+      "difficulty": 131072
+     },
+     "shares": {
+      "accepted": 0,
+      "rejected": 0,
+      "stale": 0,
+      "discarded": 0,
+      "works": 0,
+      "getworks": 0,
+      "diff1Shares": 0
+     },
+     "failures": {
+      "get": 0,
+      "remote": 0,
+      "badWork": 0
+     },
+     "rejectedPct": 0,
+     "stalePct": 0,
+     "bestShare": 0,
+     "lastShareTime": 1793904933,
+     "currentBlockHeight": 0
+    }
+   ],
+   "fans": [
+    {
+     "index": 0,
+     "pwm": 207,
+     "speed": 5028
+    },
+    {
+     "index": 1,
+     "pwm": 207,
+     "speed": 5028
+    },
+    {
+     "index": 2,
+     "pwm": 207,
+     "speed": 5028
+    },
+    {
+     "index": 3,
+     "pwm": 207,
+     "speed": 5028
+    }
+   ],
+   "errors": [
+    {
+     "code": "info.starting",
+     "severity": "info",
+     "detail": "bdminer has been up 46s; hashrate ramps for up to 900s after a restart"
+    }
+   ],
+   "health": {
+    "status": "OK",
+    "alerts": [],
+    "details": [
+     {
+      "code": "info.starting",
+      "severity": "info",
+      "detail": "bdminer has been up 46s; hashrate ramps for up to 900s after a restart"
+     },
+     {
+      "code": "warn.firmware_unverified",
+      "severity": "warn",
+      "detail": "firmware 2026060901 is newer than 2026060101; which commands exist was read from the device, but mode values and whether settings apply immediately are still assumed"
+     }
+    ],
+    "checkedAt": 1793904936264
+   }
+  },
+  "luxos": {
+   "hashrate_rt": 137.26,
+   "hashrate_avg": 137.26,
+   "hashrate_ideal": 140,
+   "power": 3107,
+   "efficiency": 22.64,
+   "temperature": 68.9,
+   "fans": [
+    {
+     "index": 0,
+     "rpm": 4867,
+     "speed_pct": 78,
+     "connector": "J12"
+    },
+    {
+     "index": 1,
+     "rpm": 4867,
+     "speed_pct": 78,
+     "connector": "J13"
+    },
+    {
+     "index": 2,
+     "rpm": 4867,
+     "speed_pct": 78,
+     "connector": "J14"
+    },
+    {
+     "index": 3,
+     "rpm": 4867,
+     "speed_pct": 78,
+     "connector": "J15"
+    }
+   ],
+   "status": "mining",
+   "uptime": 49,
+   "power_mode": "normal",
+   "profile": "default",
+   "accepted_shares": 11,
+   "rejected_shares": 0,
+   "pool_url": "stratum+tcp://btc.f2pool.com:1314",
+   "pools": [
+    {
+     "index": 0,
+     "priority": 0,
+     "group": 0,
+     "url": "stratum+tcp://btc.f2pool.com:1314",
+     "user": "haven7346.m081",
+     "status": "Alive",
+     "stratum_active": true,
+     "accepted": 11,
+     "rejected": 0,
+     "stale": 0
+    },
+    {
+     "index": 1,
+     "priority": 1,
+     "group": 0,
+     "url": "stratum+tcp://backup.pool.sim:3333",
+     "user": "haven7346.m081",
+     "status": "Alive",
+     "stratum_active": false,
+     "accepted": 0,
+     "rejected": 0,
+     "stale": 0
+    }
+   ],
+   "errors": []
+  },
+  "proto": {
+   "hashrate_avg": 93.16,
+   "power": 3308,
+   "temperature": 68.6,
+   "efficiency": 35.51,
+   "status": "mining",
+   "uptime": 49000,
+   "accepted_shares": 8,
+   "rejected_shares": 0,
+   "power_mode": "normal",
+   "power_target": 3250,
+   "fan_speed": 4814,
+   "health": {
+    "status": "OK"
+   },
+   "errors": [],
+   "pools": [
+    {
+     "url": "stratum+tcp://btc.f2pool.com:1314",
+     "accepted": 8,
+     "rejected": 0,
+     "username": "haven7346.m101",
+     "status": "Active"
+    },
+    {
+     "url": "stratum+tcp://backup.pool.sim:3333",
+     "accepted": 0,
+     "rejected": 0,
+     "username": "haven7346.m101",
+     "status": "Idle"
+    }
+   ],
+   "fans": [
+    {
+     "rpm": 4814,
+     "slot": 1,
+     "percentage": 78
+    },
+    {
+     "rpm": 4814,
+     "slot": 2,
+     "percentage": 78
+    }
+   ],
+   "pool_url": "stratum+tcp://btc.f2pool.com:1314"
+  }
+ },
+ "faults": {
+  "hashboard_failure": {
+   "avalon": {
+    "status": "mining",
+    "errors": [],
+    "fan_speed": 4831,
+    "temp": 69
+   },
+   "antminer": {
+    "status": "error",
+    "errors": [
+     {
+      "code": "W_BOARD",
+      "name": "W_BOARD",
+      "message": "A hashboard is not hashing",
+      "cause": "A hashboard is not hashing",
+      "suggestion": "Check the hashboards",
+      "timestamp": "2026-11-05T18:55:43.184Z"
+     },
+     {
+      "code": "status.rate",
+      "name": "status.rate",
+      "message": "hashrate is below target",
+      "cause": "hashrate is below target",
+      "suggestion": "",
+      "timestamp": ""
+     }
+    ],
+    "fans": [
+     {
+      "index": 0,
+      "rpm": 4982
+     }
+    ],
+    "temp": 72
+   },
+   "whatsminer": {
+    "status": "error",
+    "errors": [
+     {
+      "name": "hashboard_error",
+      "message": "Error code 530",
+      "code": "530"
+     }
+    ],
+    "in": 5056,
+    "temp": 69.7
+   },
+   "sealminer": {
+    "status": "running",
+    "errors": [
+     {
+      "code": "info.starting",
+      "severity": "info",
+      "detail": "bdminer has been up 61s; hashrate ramps for up to 900s after a restart"
+     },
+     {
+      "code": "alert.hashboard_offline",
+      "severity": "alert",
+      "detail": "board(s) 2 not reporting"
+     }
+    ],
+    "fans": [
+     {
+      "index": 0,
+      "pwm": 208,
+      "speed": 5053
+     }
+    ],
+    "fan_speed": 5053,
+    "temp": 70
+   },
+   "luxos": {
+    "status": "error",
+    "errors": [
+     {
+      "code": "HASHBOARD_FAILURE",
+      "description": "A hashboard stopped hashing.",
+      "severity": "Error",
+      "details": null,
+      "target": "BOARD",
+      "target_id": null,
+      "created_at": "2026-11-05T18:55:43.154Z",
+      "doc_url": null
+     }
+    ],
+    "fans": [
+     {
+      "index": 0,
+      "rpm": 4845,
+      "speed_pct": 78,
+      "connector": "J12"
+     }
+    ],
+    "temp": 68.7
+   },
+   "proto": {
+    "status": "error",
+    "errors": [
+     {
+      "name": "firmware_error",
+      "code": "HashboardFault",
+      "slot": 2,
+      "timestamp": 1793904944
+     }
+    ],
+    "fans": [
+     {
+      "rpm": 4717,
+      "slot": 1,
+      "percentage": 76
+     }
+    ],
+    "fan_speed": 4717,
+    "temp": 68.1
+   }
+  },
+  "fan_failure": {
+   "avalon": {
+    "status": "mining",
+    "errors": [],
+    "fan_speed": 1810,
+    "temp": 74
+   },
+   "antminer": {
+    "status": "error",
+    "errors": [
+     {
+      "code": "W_FAN",
+      "name": "W_FAN",
+      "message": "Fan speed is below the expected range",
+      "cause": "Fan speed is below the expected range",
+      "suggestion": "Check the fans",
+      "timestamp": "2026-11-05T18:55:51.871Z"
+     },
+     {
+      "code": "status.fans",
+      "name": "status.fans",
+      "message": "fan fault",
+      "cause": "fan fault",
+      "suggestion": "",
+      "timestamp": ""
+     }
+    ],
+    "fans": [
+     {
+      "index": 0,
+      "rpm": 1860
+     }
+    ],
+    "temp": 79
+   },
+   "whatsminer": {
+    "status": "error",
+    "errors": [
+     {
+      "name": "hashrate_low",
+      "message": "Error code 110",
+      "code": "110"
+     }
+    ],
+    "in": 1860,
+    "temp": 76.7
+   },
+   "sealminer": {
+    "status": "running",
+    "errors": [
+     {
+      "code": "info.starting",
+      "severity": "info",
+      "detail": "bdminer has been up 375s; hashrate ramps for up to 900s after a restart"
+     }
+    ],
+    "fans": [
+     {
+      "index": 0,
+      "pwm": 255,
+      "speed": 1860
+     }
+    ],
+    "fan_speed": 1860,
+    "temp": 77
+   },
+   "luxos": {
+    "status": "error",
+    "errors": [
+     {
+      "code": "FAN_FAILURE",
+      "description": "A fan is below its expected speed.",
+      "severity": "Error",
+      "details": null,
+      "target": "FAN",
+      "target_id": null,
+      "created_at": "2026-11-05T18:55:51.887Z",
+      "doc_url": null
+     }
+    ],
+    "fans": [
+     {
+      "index": 0,
+      "rpm": 1834,
+      "speed_pct": 99,
+      "connector": "J12"
+     }
+    ],
+    "temp": 74.9
+   },
+   "proto": {
+    "status": "error",
+    "errors": [
+     {
+      "name": "firmware_error",
+      "code": "FanFault",
+      "slot": 1,
+      "timestamp": 1793904951
+     }
+    ],
+    "fans": [
+     {
+      "rpm": 1804,
+      "slot": 1,
+      "percentage": 97
+     }
+    ],
+    "fan_speed": 1804,
+    "temp": 74.4
+   }
+  }
+ },
+ "meter": {
+  "voltage": 30902.32223222322,
+  "current": 8.506650665066507,
+  "active_power": 445643.0603060435,
+  "power_factor": 0.9799979997999801,
+  "frequency": 0
+ },
+ "outageMeter": {
+  "voltage": 0,
+  "current": 0,
+  "active_power": 0,
+  "power_factor": 1,
+  "frequency": 0
+ },
+ "sensor": {
+  "temperature": 27.4
+ },
+ "outage": {
+  "avalon": {
+   "status": {
+    "error": "ERR_TELEMETRY_FAILED"
+   },
+   "power": {
+    "error": "ERR_TELEMETRY_FAILED"
+   },
+   "keys": 9
+  },
+  "antminer": {
+   "status": {
+    "error": "ERR_HTTP_CONNECTION: http://127.0.0.1:14050/cgi-bin/warning.cgi request to http://127.0.0.1:14050/cgi-bin/warning.cgi failed, reason: read ECONNRESET"
+   },
+   "power": {
+    "error": "ERR_HTTP_CONNECTION: http://127.0.0.1:14050/cgi-bin/stats.cgi request to http://127.0.0.1:14050/cgi-bin/stats.cgi failed, reason: read ECONNRESET"
+   },
+   "keys": 22
+  },
+  "whatsminer": {
+   "status": {
+    "error": "ERR_API_V3_CONNECTION"
+   },
+   "power": {
+    "error": "ERR_API_V3_CONNECTION"
+   },
+   "keys": 22
+  },
+  "sealminer": {
+   "status": {
+    "error": "ERR_API_CONNECTION: stats: read ECONNRESET"
+   },
+   "power": {
+    "error": "ERR_API_CONNECTION: stats: read ECONNRESET"
+   },
+   "keys": 29
+  },
+  "luxos": {
+   "status": {
+    "error": "ERR_TCP_CONNECTION: ECONNRESET"
+   },
+   "power": {
+    "error": "ERR_TCP_CONNECTION: ECONNRESET"
+   },
+   "keys": 20
+  },
+  "proto": {
+   "status": {
+    "error": "ERR_DEVICE_CONNECTION"
+   },
+   "power": {
+    "error": "ERR_DEVICE_CONNECTION"
+   },
+   "keys": 22
+  }
+ }
+}

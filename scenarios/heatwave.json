@@ -1,0 +1,47 @@
+{
+  "id": "heatwave",
+  "name": "Summer heatwave",
+  "description": "Outdoor temperature climbs 15°C over several hours, then eases off. Cooling derates and machines begin to throttle.",
+  "goal": "Keep chips under their throttle point while giving up as little hashrate as you can.",
+  "speed": 300,
+  "duration": "12:00:00",
+  "events": [
+    {
+      "at": "00:10:00",
+      "action": "note",
+      "message": "Forecast: extreme heat building through the afternoon"
+    },
+    {
+      "at": "00:30:00",
+      "action": "fault",
+      "type": "heatwave",
+      "params": {
+        "deltaC": 5
+      },
+      "durationSec": 39600
+    },
+    {
+      "at": "02:00:00",
+      "action": "fault",
+      "type": "heatwave",
+      "params": {
+        "deltaC": 5
+      },
+      "durationSec": 25200
+    },
+    {
+      "at": "03:30:00",
+      "action": "fault",
+      "type": "heatwave",
+      "params": {
+        "deltaC": 5
+      },
+      "durationSec": 14400
+    },
+    {
+      "at": "08:00:00",
+      "action": "note",
+      "message": "Temperatures easing"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "cooling-failure",
+  "name": "Cooling plant failure",
+  "description": "Container 1 loses cooling in three stages. Machines throttle first, which holds them for a while, then the last stage trips them.",
+  "goal": "Shed load in the affected container before machines start tripping.",
+  "speed": 60,
+  "duration": "03:00:00",
+  "events": [
+    {
+      "at": "00:10:00",
+      "action": "fault",
+      "type": "cooling_failure",
+      "target": "c1",
+      "params": {
+        "severity": 0.3
+      },
+      "durationSec": 5400
+    },
+    {
+      "at": "00:40:00",
+      "action": "fault",
+      "type": "cooling_failure",
+      "target": "c1",
+      "params": {
+        "severity": 0.6
+      },
+      "durationSec": 3600
+    },
+    {
+      "at": "01:10:00",
+      "action": "fault",
+      "type": "cooling_failure",
+      "target": "c1",
+      "params": {
+        "severity": 0.85
+      },
+      "durationSec": 1800
+    }
+  ]
+}

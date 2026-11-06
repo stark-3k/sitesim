@@ -1,0 +1,12 @@
+{
+  "id": "total-pool-loss",
+  "name": "All pools down",
+  "description": "Both pools fail together. Machines keep burning power while earning nothing.",
+  "goal": "Detect that power is being spent for no revenue, then put the fleet to sleep until a pool returns.",
+  "speed": 60,
+  "duration": "02:00:00",
+  "events": [
+    { "at": "00:05:00", "action": "fault", "type": "pool_outage", "target": "pool:f2pool", "params": { "apiDown": 1 }, "durationSec": 4200 },
+    { "at": "00:05:30", "action": "fault", "type": "pool_outage", "target": "pool:backup", "durationSec": 3600 }
+  ]
+}
