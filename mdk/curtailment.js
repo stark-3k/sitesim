@@ -387,6 +387,12 @@ class CurtailmentResponder {
     for (const id of this.notBack) {
       if (byId.get(id)?.hashThs > 0) this.notBack.delete(id)
     }
+    // Eco is over only when the power says so. Whether waking ends it varies by brand:
+    // on LuxOS it's a tuning profile, which outlasts a sleep.
+    for (const [id, entry] of this.throttled) {
+      const miner = byId.get(id)
+      if (miner && !miner.asleep && miner.hashThs > 0 && !this.pending.has(id) && miner.powerW / 1000 >= entry.kw * 0.9) this.throttled.delete(id)
+    }
     // Woken by someone else, or the sleep never took. Either way it's awake.
     for (const id of this.slept.keys()) {
       const miner = byId.get(id)
@@ -508,7 +514,7 @@ class CurtailmentResponder {
       if (actions.wake.length) parts.push(`waking ${actions.wake.length}`)
       if (actions.restore.length) parts.push(`back to normal ${actions.restore.length}`)
       const limit = Number.isFinite(limitKw) ? `limit ${limitKw.toFixed(0)} kW` : 'no limit'
-      this.log(`Site ${powerKw.toFixed(0)} kW, ${limit}: ${parts.join(', ')}. ${this.slept.size} asleep, ${this.throttled.size} on eco.`)
+      this.log(`Site ${powerKw.toFixed(0)} kW, ${limit}: ${parts.join(', ')}. ${this.slept.size} asleep, ${[...this.throttled.keys()].filter((id) => !this.slept.has(id)).length} on eco.`)
     }
 
     this.summary = this._describe({ signals, powerKw, limitKw, miners, floors, rampBlock, actions, now })
@@ -541,14 +547,12 @@ class CurtailmentResponder {
       if (await this._send(id, 'wake', entry.kw)) {
         this.slept.delete(id)
         this.returning.set(id, { at: now, sentAt: Date.now(), kw: entry.kw })
-        // Waking with a mode change also ends eco. SealMiner's `resume` leaves it set.
-        if (this.brands.get(id) !== 'sealminer') this.throttled.delete(id)
       }
     }))
     await Promise.all(restore.map(async (id) => {
       const m = byId.get(id)
       const entry = this.throttled.get(id)
-      if (await this._send(id, 'restore', Math.max(0, entry.kw - m.powerW / 1000), m.powerW)) this.throttled.delete(id)
+      await this._send(id, 'restore', Math.max(0, entry.kw - m.powerW / 1000), m.powerW)
     }))
   }
 
@@ -586,7 +590,7 @@ class CurtailmentResponder {
       miners: this.miners.length,
       seen: miners.length,
       asleep: this.slept.size,
-      eco: this.throttled.size,
+      eco: [...this.throttled.keys()].filter((id) => !this.slept.has(id)).length,
       returning: this.returning.size,
       notBack: [...this.notBack],
       failedCommands: this.rejected,

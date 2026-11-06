@@ -358,8 +358,8 @@ test('the return is limited per step, and sleepers go before eco miners', () => 
 
 // A site with a clock, price and alerts under the test's control. Woken miners take
 // their time, and eco mode really does change what telemetry reports.
-function liveSite (count = 10) {
-  const list = Array.from({ length: count }, (_, i) => ({ id: `m${i}`, brand: 'antminer', power: 3000, hash: 180 + i, status: 'mining', mode: 'normal', temp: 70 }))
+function liveSite (count = 10, brand = 'antminer') {
+  const list = Array.from({ length: count }, (_, i) => ({ id: `m${i}`, brand, power: 3000, hash: 180 + i, status: 'mining', mode: 'normal', temp: 70 }))
   const miners = new Map(list.map((m) => [m.id, m]))
   const signals = { nowMs: 0, limitKw: 1000, priceUsdKwh: 0.05, hashpriceUsdThDay: 0.05, gridAlert: false }
   const site = {
@@ -382,8 +382,12 @@ function liveSite (count = 10) {
         site.commands.push({ id, command, params })
         const m = miners.get(id)
         if (params.mode === 'sleep') m.status = 'sleeping'
-        else if (params.mode === 'low') m.mode = 'low'
-        else {
+        else if (params.mode === 'low' || params.profile === '450MHz') m.mode = 'low'
+        else if (params.profile === 'default') m.mode = 'normal'
+        else if (brand === 'luxos') {
+          // Waking a LuxOS miner leaves its tuning profile as it was.
+          if (m.status === 'sleeping') m.status = site.bootsHeld ? 'booting' : 'mining'
+        } else {
           m.mode = 'normal'
           if (m.status === 'sleeping') m.status = site.bootsHeld ? 'booting' : 'mining'
         }
@@ -652,4 +656,57 @@ test('a clock that goes backwards, as a reset does, doesn’t freeze it', async 
   site.signals.nowMs = 0
   await run(site, app, 60)
   assert.equal(site.asleep(), 0)
+})
+
+test('a brand whose eco outlasts a sleep is still brought back to full power', async () => {
+  const site = liveSite(10, 'luxos')
+  const app = site.app()
+  await run(site, app, 2)
+  site.signals.gridAlert = true
+  await run(site, app, 1)
+  assert.equal(site.onEco(), 10)
+  site.signals.limitKw = 8
+  await run(site, app, 1)
+  assert.ok(site.asleep() >= 7)
+
+  site.signals.gridAlert = false
+  site.signals.limitKw = 1000
+  await run(site, app, 120)
+  assert.equal(site.asleep(), 0)
+  assert.equal(site.onEco(), 0, 'still on eco, though awake')
+  assert.equal(app.throttled.size, 0)
+  assert.equal(app.status().state, 'normal')
+})
+
+test('a restore that doesn’t take is tried again', async () => {
+  const site = liveSite()
+  const app = site.app()
+  await run(site, app, 2)
+  site.signals.gridAlert = true
+  await run(site, app, 1)
+  site.signals.gridAlert = false
+  const original = site.client.sendCommand
+  const dropped = new Set()
+  site.client.sendCommand = async (id, command, params) => {
+    if (params.mode === 'normal' && !dropped.has(id)) {
+      dropped.add(id)
+      return { status: 'QUEUED' }
+    }
+    return original(id, command, params)
+  }
+  await run(site, app, 150)
+  assert.ok(dropped.size > 0)
+  assert.equal(site.onEco(), 0)
+})
+
+test('the card doesn’t count sleeping miners as on eco', async () => {
+  const site = liveSite()
+  const app = site.app()
+  await run(site, app, 2)
+  site.signals.gridAlert = true
+  await run(site, app, 1)
+  site.signals.limitKw = 8
+  await run(site, app, 2)
+  const { eco, asleep } = app.status()
+  assert.equal(eco + asleep, 10)
 })

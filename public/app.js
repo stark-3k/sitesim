@@ -858,6 +858,134 @@ function view3dState (state) {
   return mergeView(state, mdkSource.view, mdkSource.memory)
 }
 
+// --- first-visit tour -----------------------------------------------------
+
+const TOUR_SEEN_KEY = 'sitesim.tourSeen'
+const tour = { steps: null, helpers: null, index: 0, returnView: null, frame: null, placed: '', appRunning: false }
+
+function tourSeen () {
+  try {
+    return localStorage.getItem(TOUR_SEEN_KEY) !== null
+  } catch {
+    // With no way to remember, don't greet someone on every visit.
+    return true
+  }
+}
+
+function markTourSeen () {
+  try {
+    localStorage.setItem(TOUR_SEEN_KEY, '1')
+  } catch {
+    // Only a convenience.
+  }
+}
+
+const tourTarget = () => {
+  const { target } = tour.steps[tour.index]
+  const el = target && document.querySelector(target)
+  return el && el.getClientRects().length ? el : null
+}
+
+// Runs each frame, because the page can shift under the tour as live data arrives.
+function placeTour () {
+  if (!$('tour').open) return
+  const el = tourTarget()
+  const rect = el?.getBoundingClientRect() ?? null
+  const viewport = { width: document.documentElement.clientWidth, height: window.innerHeight }
+  const card = $('tour-card')
+  const key = JSON.stringify([rect, viewport, card.offsetWidth, card.offsetHeight])
+  if (key !== tour.placed) {
+    tour.placed = key
+    const { left, top } = tour.helpers.placeCard(rect, { width: card.offsetWidth, height: card.offsetHeight }, viewport)
+    card.style.left = `${left}px`
+    card.style.top = `${top}px`
+    const hole = $('tour-hole')
+    hole.hidden = !rect
+    $('tour').classList.toggle('tour-dim', !rect)
+    if (rect) {
+      const box = tour.helpers.highlightRect(rect, viewport)
+      Object.assign(hole.style, { left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` })
+    }
+  }
+  tour.frame = requestAnimationFrame(placeTour)
+}
+
+function showTourStep (index) {
+  tour.index = Math.max(0, Math.min(index, tour.steps.length - 1))
+  const step = tour.steps[tour.index]
+  const last = tour.index === tour.steps.length - 1
+  const busy = Boolean(ui.state?.scenario)
+  const running = step.bodyWhenRunning && tour.appRunning
+
+  $('tour-count').textContent = `${tour.index + 1} of ${tour.steps.length}`
+  $('tour-title').textContent = step.title
+  $('tour-body').textContent = running ? step.bodyWhenRunning : (busy && step.bodyWhenBusy) || step.body
+  $('tour-code').hidden = !step.code || running
+  $('tour-code').textContent = step.code ?? ''
+  $('tour-back').hidden = tour.index === 0
+  $('tour-skip').hidden = last
+
+  const action = $('tour-action')
+  action.hidden = !step.action || busy
+  action.textContent = step.action?.label ?? ''
+  const next = $('tour-next')
+  next.textContent = last ? 'Finish' : tour.index === 0 ? 'Start the tour' : 'Next'
+  next.classList.toggle('btn-primary', action.hidden)
+
+  tourTarget()?.scrollIntoView({ block: 'center', inline: 'nearest' })
+  tour.placed = ''
+  ;(action.hidden ? next : action).focus()
+}
+
+async function openTour () {
+  if ($('tour').open) return
+  tour.helpers ||= await import('./tour.mjs')
+  tour.steps = tour.helpers.STEPS
+  // Its steps point at the dashboard, so show that and go back afterwards.
+  tour.returnView = savedView()
+  if (tour.returnView !== 'dashboard') await setView('dashboard')
+  try {
+    tour.appRunning = (await fetch(`${BRIDGE}/curtailment`)).ok
+  } catch {
+    tour.appRunning = false
+  }
+  $('tour').showModal()
+  showTourStep(0)
+  placeTour()
+}
+
+function closeTour () {
+  $('tour').close()
+}
+
+function setupTour () {
+  const dialog = $('tour')
+  $('btn-tour').addEventListener('click', openTour)
+  $('tour-skip').addEventListener('click', closeTour)
+  $('tour-back').addEventListener('click', () => showTourStep(tour.index - 1))
+  $('tour-next').addEventListener('click', () => {
+    if (tour.index === tour.steps.length - 1) closeTour()
+    else showTourStep(tour.index + 1)
+  })
+  $('tour-action').addEventListener('click', async () => {
+    const { scenario } = tour.steps[tour.index].action
+    closeTour()
+    await act('/api/scenarios/start', { id: scenario })
+  })
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && tour.index < tour.steps.length - 1) showTourStep(tour.index + 1)
+    if (e.key === 'ArrowLeft' && tour.index > 0) showTourStep(tour.index - 1)
+  })
+  // Covers every way out, including Esc, so it only greets someone once.
+  dialog.addEventListener('close', () => {
+    cancelAnimationFrame(tour.frame)
+    markTourSeen()
+    if (tour.returnView && tour.returnView !== 'dashboard') setView(tour.returnView)
+    window.scrollTo(0, 0)
+  })
+  if (!tourSeen()) openTour()
+}
+
 // --- curtailment app ------------------------------------------------------
 
 const CURTAIL_POLL_MS = 2000
@@ -1289,6 +1417,7 @@ function bindEvents () {
 
   $('curtail-form').addEventListener('submit', submitCurtailmentCap)
   pollCurtailment()
+  setupTour()
 
   $('btn-mdk').onclick = async () => {
     const config = await api('/api/mdk/config')

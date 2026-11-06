@@ -35,6 +35,7 @@
     </div>
 
     <div class="topbar-right">
+      <button id="btn-tour" class="btn btn-quiet" type="button">Tour</button>
       <button id="btn-mdk" class="btn" type="button">Connect MDK</button>
       <a class="btn" href="/api/export.csv">Export CSV</a>
       <button id="btn-reset" class="btn btn-quiet" type="button">Reset</button>
@@ -277,6 +278,23 @@
     </div>
     <p class="hint">Pass these options to each Worker's boot function. The simulator answers on the same protocols as the real devices, so the Workers need no changes.</p>
     <pre id="mdk-config" class="code"></pre>
+  </dialog>
+
+  <dialog id="tour" class="tour" aria-labelledby="tour-title" aria-describedby="tour-body">
+    <div id="tour-hole" class="tour-hole" hidden></div>
+    <div id="tour-card" class="tour-card">
+      <p id="tour-count" class="tour-count"></p>
+      <h2 id="tour-title"></h2>
+      <p id="tour-body" class="tour-body"></p>
+      <pre id="tour-code" class="code tour-code" hidden></pre>
+      <div class="tour-actions">
+        <button id="tour-skip" type="button" class="btn btn-small btn-quiet">Skip tour</button>
+        <span class="tour-spacer"></span>
+        <button id="tour-back" type="button" class="btn btn-small">Back</button>
+        <button id="tour-action" type="button" class="btn btn-small btn-primary" hidden></button>
+        <button id="tour-next" type="button" class="btn btn-small btn-primary">Next</button>
+      </div>
+    </div>
   </dialog>
 
   <script src="app.js"></script>
